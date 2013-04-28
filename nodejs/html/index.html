@@ -1,0 +1,126 @@
+<html>
+<head>
+  <title>PubSub</title>
+  <script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
+  <script src="js/jquery-1.9.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAhBTR4STQvuK9o4O3NMSi-K0Bev2eMXbo&sensor=false"></script>
+</head>
+
+<body>
+  <div id="content">
+    <h3 id="title">Twitter Storm</h3>
+    
+    <div class="tweet">
+      <span class="username">@</span><span class="username"></span><span class="username">: </span>
+      <span class="tweet-text"></span>
+      <br />
+      <span>Latitude: </span><span class="lat"></span> <span>Longitude: </span><span class="long"></span>
+    </div>
+
+  </div>
+
+  <script>
+  	var map;
+  
+	function addMarker(lat,lon, tweet){
+		latitude = parseFloat(lat);
+		longitude = parseFloat(lon);
+	    marker = new google.maps.Marker({
+		    position:  mark = new google.maps.LatLng(latitude,longitude),
+		    map: map,
+		    //icon: '/icon.png',
+		    animation: google.maps.Animation.DROP,
+		    title: tweet	
+		});
+	}  
+  
+  
+  
+    var tweet_count = 0;
+    $(document).ready(function() {
+    
+    var socket = io.connect('localhost', {port:3000});
+    
+    socket.on('connect', function(){
+    console.log("connect");
+    });
+
+    socket.on('message', function(message) {
+	    tweet_count = tweet_count + 1;
+	    console.log(tweet_count);
+	    var tweet = $.parseJSON(message);
+	    $(".username").html(tweet.user);
+	    $(".tweet-text").html(tweet.text);
+	    $(".lat").html(tweet.latitude);
+	    $(".long").html(tweet.longitude);
+	   
+	    addMarker(tweet.latitude, tweet.longitude, tweet.user + ': ' + tweet.text);
+	    
+    });
+
+    socket.on('disconnect', function() {
+	    console.log('disconnected');
+    });
+});
+  </script>
+
+  
+
+    <script>
+    var type_ID = 'dark';
+      var featureOpts = [
+				  {
+				    "elementType": "geometry",
+				    "stylers": [
+				      { "weight": 1.0 },
+				      { "gamma": 1 },
+				      { "invert_lightness": true },
+				      { "saturation": -65 },
+				      { "visibility": "on" },
+				      { "hue": "#1100ff" },
+				      
+				    ]
+				  }
+				];
+	    function initialize() {
+		    var mapOptions = {
+			    zoom: 5,
+			    center: new google.maps.LatLng(39.8282, -98.5795),
+			    mapTypeControlOptions: {
+				    mapTypeIds: [google.maps.MapTypeId.ROADMAP, type_ID]
+				},
+			    mapTypeId: type_ID
+			    };
+			    map = new google.maps.Map(document.getElementById('map-canvas'),
+			    mapOptions);
+			    var styledMapOptions = {
+				    name: 'Dark'
+			    };
+			    
+			     var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
+			     map.mapTypes.set(type_ID, customMapType);
+			     
+     					    
+			    
+			    //mark = new google.maps.LatLng(37.7699,-122.4469);
+			    //addMarker(mark);
+		}
+		
+
+
+			    google.maps.event.addDomListener(window, 'load', initialize);
+			    
+
+    </script>
+
+
+<div id="map-canvas"></div>
+
+  <script>
+
+  
+  </script>
+  
+</body>
+</html>

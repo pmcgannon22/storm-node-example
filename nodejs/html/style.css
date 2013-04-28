@@ -1,0 +1,19 @@
+#title {
+	text-align: center;
+	font-family: "Garamond","Times New Roman", serif;
+	margin-bottom: 10px;
+}
+
+.tweet {
+	margin-left: 100px;
+}
+
+.tweet .username {
+	font-weight: bold;
+}
+
+html, body, #map-canvas {
+	margin: 0;
+    padding: 0;
+    height: 100%;
+}
